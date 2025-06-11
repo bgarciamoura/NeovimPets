@@ -13,11 +13,17 @@ local pet = {
   }
 }
 
+local config = {
+  message_delay = 5,
+}
+
+local last_message_time = 0
+
 local messages = {
-  "Vamos brincar! 😊",
-  "Continue digitando! 🐾",
-  "Você está arrasando! 😸",
-  "Isso aí! 🎉",
+  "Que bom te ver digitando bastante! Continue assim e vamos nos divertir muito! 😊",
+  "Continue digitando sem pressa, cada palavra conta para a evolução do nosso amiguinho virtual. 🐾",
+  "Você está arrasando! Não pare agora, ele adora companhia! 😸",
+  "Isso aí! Quanto mais você digita, mais animado ele fica. 🎉",
 }
 
 local function show_pet()
@@ -45,6 +51,11 @@ local function show_pet()
 end
 
 local function random_message()
+  local now = os.time()
+  if now - last_message_time < config.message_delay then
+    return
+  end
+  last_message_time = now
   local msg = messages[math.random(#messages)]
   vim.api.nvim_echo({{msg}}, false, {})
 end
@@ -67,7 +78,11 @@ local function check_word(line)
   end
 end
 
-function M.setup()
+function M.setup(opts)
+  opts = opts or {}
+  if opts.message_delay then
+    config.message_delay = opts.message_delay
+  end
   vim.api.nvim_create_autocmd('TextChangedI', {
     callback = function()
       local line = vim.api.nvim_get_current_line()
