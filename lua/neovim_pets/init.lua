@@ -5,6 +5,11 @@ math.randomseed(os.time())
 local pet = {
   words = 0,
   stage = 1,
+  row = 1,
+  col = nil,
+  width = 0,
+  height = 0,
+  timer = nil,
   stages = {
     {" (^_^) "},
     {" /\\_/\\ ", "( o.o )"},
@@ -20,6 +25,19 @@ local messages = {
   "Isso aí! 🎉",
 }
 
+local function move_pet()
+  if not pet.win or not vim.api.nvim_win_is_valid(pet.win) then
+    return
+  end
+  local max_row = vim.o.lines - pet.height - 2
+  local max_col = vim.o.columns - pet.width - 2
+  local dr = math.random(-1, 1)
+  local dc = math.random(-1, 1)
+  pet.row = math.max(0, math.min(pet.row + dr, max_row))
+  pet.col = math.max(0, math.min(pet.col + dc, max_col))
+  vim.api.nvim_win_set_config(pet.win, { row = pet.row, col = pet.col })
+end
+
 local function show_pet()
   local lines = pet.stages[pet.stage]
   local buf = vim.api.nvim_create_buf(false, true)
@@ -28,10 +46,15 @@ local function show_pet()
   for _, l in ipairs(lines) do
     if #l > width then width = #l end
   end
+  pet.width = width
+  pet.height = #lines
+  if not pet.col then
+    pet.col = vim.o.columns - width - 2
+  end
   local opts = {
     relative = 'editor',
-    row = 1,
-    col = vim.o.columns - width - 2,
+    row = pet.row,
+    col = pet.col,
     width = width,
     height = #lines,
     style = 'minimal',
@@ -42,6 +65,10 @@ local function show_pet()
     vim.api.nvim_win_close(pet.win, true)
   end
   pet.win = vim.api.nvim_open_win(buf, false, opts)
+  if not pet.timer then
+    pet.timer = vim.loop.new_timer()
+    pet.timer:start(1000, 1000, vim.schedule_wrap(move_pet))
+  end
 end
 
 local function random_message()
