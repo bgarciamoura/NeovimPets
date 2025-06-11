@@ -24,5 +24,6 @@ Use seu gerenciador de plugins preferido. Exemplo com [lazy.nvim](https://github
 - Em determinados limiares (10, 20 e 40 palavras), ele evolui para um novo est\xc3\xa1gio, exibindo um pixel art maior.
 - O plugin tamb\xc3\xa9m exibe mensagens aleat\xc3\xb3rias com emojis para incentivar a digita\xc3\xa7\xc3\xa3o.
   \xc3\x89 poss\xc3\xadvel definir um intervalo em segundos entre cada mensagem, fazendo com que apare\xc3\xa7am em um ritmo mais tranquilo.
+- Agora o pet se movimenta pelo editor enquanto voc\xc3\xaa digita, mudando de posi\xc3\xa7\xc3\xa3o periodicamente.
 
 Sinta-se \xc3\xa0 vontade para personalizar os est\xc3\xa1gios do pet e as mensagens no arquivo `lua/neovim_pets/init.lua`.
