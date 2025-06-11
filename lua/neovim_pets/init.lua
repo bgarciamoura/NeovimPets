@@ -35,7 +35,13 @@ local function move_pet()
   local dc = math.random(-1, 1)
   pet.row = math.max(0, math.min(pet.row + dr, max_row))
   pet.col = math.max(0, math.min(pet.col + dc, max_col))
-  vim.api.nvim_win_set_config(pet.win, { row = pet.row, col = pet.col })
+  -- nvim_win_set_config requires the 'relative' field when updating a
+  -- floating window. Reuse the same setting as when the window was created.
+  vim.api.nvim_win_set_config(pet.win, {
+    relative = 'editor',
+    row = pet.row,
+    col = pet.col,
+  })
 end
 
 local function show_pet()
